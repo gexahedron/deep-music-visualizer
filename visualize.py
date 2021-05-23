@@ -372,7 +372,7 @@ for i in tqdm(range(len(class_vectors) // batch_size + 1)):
         im = (np.moveaxis(im, 0, -1) + 1) / 2
         im = (im * 255).astype(np.uint8)
         im_pil = Image.fromarray(im)
-        im_pil.save(join(args.folder, '/%03d.png' % idx))
+        im_pil.save(join(args.folder, '%03d.png' % idx))
 
     #empty cuda cache
     torch.cuda.empty_cache()
