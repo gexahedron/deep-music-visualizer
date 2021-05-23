@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 from os import listdir
-from os.path import isfile, join
+from os.path import join
 from pathlib import Path
 from tqdm import tqdm
 import argparse
@@ -18,7 +18,7 @@ new_folder = args.output
 Path(new_folder).mkdir(parents=True, exist_ok=True)
 
 rdn = RDN(weights='noise-cancel')
-files = os.listdir(folder)
+files = listdir(folder)
 files.sort()
 for i in tqdm(range(len(files))):
     im_name = files[i].split('.')[0]    

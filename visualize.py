@@ -7,6 +7,7 @@ import torch
 from tqdm import tqdm
 from PIL import Image
 from pathlib import Path
+from os.path import join
 from pytorch_pretrained_biggan import (BigGAN, truncated_noise_sample)
 
 #get input arguments
@@ -82,8 +83,6 @@ else:
 
 
 
-# Load pre-trained model
-model = BigGAN.from_pretrained(model_name)
 
 #set device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -339,7 +338,6 @@ class_vectors = torch.Tensor(np.array(class_vectors))
 print('\n\nGenerating frames \n')
 
 #send to CUDA if running on GPU
-model=model.to(device)
 noise_vectors=noise_vectors.to(device)
 class_vectors=class_vectors.to(device)
 
@@ -349,6 +347,9 @@ Path(args.folder).mkdir(parents=True, exist_ok=True)
 
 idx = 0
 for i in tqdm(range(len(class_vectors) // batch_size + 1)):
+    # Load pre-trained model
+    model = BigGAN.from_pretrained(model_name)
+    model = model.to(device)
 
     if i*batch_size > len(class_vectors):
         torch.cuda.empty_cache()
@@ -371,8 +372,7 @@ for i in tqdm(range(len(class_vectors) // batch_size + 1)):
         im = (np.moveaxis(im, 0, -1) + 1) / 2
         im = (im * 255).astype(np.uint8)
         im_pil = Image.fromarray(im)
-        im_pil.save('frames/%03d.png' % idx)
+        im_pil.save(join(args.folder, '/%03d.png' % idx))
 
     #empty cuda cache
     torch.cuda.empty_cache()
-
