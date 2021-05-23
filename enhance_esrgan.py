@@ -22,7 +22,7 @@ new_folder = args.output
 Path(new_folder).mkdir(parents=True, exist_ok=True)
 
 # ['models/RRDB_ESRGAN_x4.pth','models/RRDB_PSNR_x4.pth','models/PPON_G.pth','models/PPON_D.pth']  
-model_path = 'ESRGAN/models/RRDB_PSNR_x4.pth'
+model_path = 'ESRGAN/models/RRDB_ESRGAN_x4.pth'
 device = torch.device('cuda') 
 
 model = arch.RRDBNet(3, 3, 64, 23, gc=32)
