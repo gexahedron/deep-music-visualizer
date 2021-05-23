@@ -344,10 +344,10 @@ noise_vectors=noise_vectors.to(device)
 class_vectors=class_vectors.to(device)
 
 
-frames = []
 
 Path(args.folder).mkdir(parents=True, exist_ok=True)
 
+idx = 0
 for i in tqdm(range(len(class_vectors) // batch_size + 1)):
 
     if i*batch_size > len(class_vectors):
@@ -366,13 +366,12 @@ for i in tqdm(range(len(class_vectors) // batch_size + 1)):
 
     #convert to image array and add to frames
     for out in output_cpu:
+        idx += 1
         im = np.array(out)
         im = (np.moveaxis(im, 0, -1) + 1) / 2
         im = (im * 255).astype(np.uint8)
         im_pil = Image.fromarray(im)
-        frames.append(im)
-        im_pil.save('frames/%03d.png' % len(frames))
-        print(len(frames))
+        im_pil.save('frames/%03d.png' % idx)
 
     #empty cuda cache
     torch.cuda.empty_cache()
