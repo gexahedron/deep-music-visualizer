@@ -73,8 +73,6 @@ use_previous_vectors=args.use_previous_vectors
 #set use_previous_vectors
 use_previous_classes=args.use_previous_classes
 
-#set output name
-outname=args.output_file
 
 #set smooth factor
 if args.smooth_factor > 1:
@@ -351,8 +349,6 @@ frames = []
 Path(args.folder).mkdir(parents=True, exist_ok=True)
 
 for i in tqdm(range(len(class_vectors) // batch_size + 1)):
-    #print progress
-    pass
 
     if i*batch_size > len(class_vectors):
         torch.cuda.empty_cache()
@@ -361,7 +357,6 @@ for i in tqdm(range(len(class_vectors) // batch_size + 1)):
     #get batch
     noise_vector=noise_vectors[i*batch_size:(i+1)*batch_size]
     class_vector=class_vectors[i*batch_size:(i+1)*batch_size]
-    # print(i*batch_size, (i+1)*batch_size)
 
     # Generate images
     with torch.no_grad():
@@ -371,37 +366,14 @@ for i in tqdm(range(len(class_vectors) // batch_size + 1)):
 
     #convert to image array and add to frames
     for out in output_cpu:
-        # im = np.array(toimage(out))
-        # print(im.shape, im.dtype)
-        # asdf
         im = np.array(out)
         im = (np.moveaxis(im, 0, -1) + 1) / 2
-        # print(np.min(im))
-        # asdf
         im = (im * 255).astype(np.uint8)
         im_pil = Image.fromarray(im)
-        # im = im[:, :, ::-1]
-        # im = cv2.cvtColor(np.moveaxis(im, 0, -1), cv2.COLOR_RGB2BGR)
         frames.append(im)
-        # cv2.imwrite('frames/%03d.png' % len(frames), im)
         im_pil.save('frames/%03d.png' % len(frames))
         print(len(frames))
 
     #empty cuda cache
     torch.cuda.empty_cache()
 
-
-# for idx, f in enumerate(frames):
-    # cv2.imwrite('frames/%03d.png' % idx, f)
-
-# import moviepy.editor as mpy
-
-# #Save video
-# aud = mpy.AudioFileClip(song, fps = 44100)
-
-# if args.duration:
-#     aud.duration=args.duration
-
-# clip = mpy.ImageSequenceClip(frames, fps=22050/frame_length)
-# clip = clip.set_audio(aud)
-# clip.write_videofile(outname,audio_codec='aac')
