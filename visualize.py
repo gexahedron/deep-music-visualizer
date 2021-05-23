@@ -25,7 +25,7 @@ parser.add_argument("--sort_classes_by_power", type=int, default=0)
 parser.add_argument("--jitter", type=float, default=0.5)
 parser.add_argument("--frame_length", type=int, default=512)
 parser.add_argument("--truncation", type=float, default=1)
-parser.add_argument("--smooth_factor", type=int, default=32)
+parser.add_argument("--smooth_factor", type=int, default=16)
 parser.add_argument("--use_previous_classes", type=int, default=0)
 parser.add_argument("--use_previous_vectors", type=int, default=0)
 args = parser.parse_args()
@@ -337,6 +337,10 @@ class_vectors = torch.Tensor(np.array(class_vectors))
 
 print('\n\nGenerating frames \n')
 
+# Load pre-trained model
+model = BigGAN.from_pretrained(model_name)
+model = model.to(device)
+
 #send to CUDA if running on GPU
 noise_vectors=noise_vectors.to(device)
 class_vectors=class_vectors.to(device)
@@ -347,10 +351,6 @@ Path(args.folder).mkdir(parents=True, exist_ok=True)
 
 idx = 0
 for i in tqdm(range(len(class_vectors) // batch_size + 1)):
-    # Load pre-trained model
-    model = BigGAN.from_pretrained(model_name)
-    model = model.to(device)
-
     if i*batch_size > len(class_vectors):
         torch.cuda.empty_cache()
         break
