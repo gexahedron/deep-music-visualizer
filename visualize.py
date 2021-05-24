@@ -113,7 +113,7 @@ gradm = gradm.clip(min=0)
 specm = (specm-np.min(specm))/np.ptp(specm)
 
 #create chromagram of pitches X time points
-chroma = librosa.feature.chroma_cqt(y=y, sr=sr, hop_length=frame_length)
+chroma = librosa.feature.chroma_cqt(y=y, sr=sr, hop_length=frame_length, n_chroma=len(args.classes))
 
 #sort pitches by overall power
 chromasort = np.argsort(np.mean(chroma,axis=1))[::-1]
